@@ -4,7 +4,7 @@
 
 std::vector<double> solve_tridiag(std::string filename) {
 	std::ifstream file;
-	file.open("../../examples/tridiag/" + filename + "/data.txt");
+	file.open("../examples/tridiag/" + filename + "/data.txt");
 
 	int n;
 	file >> n;
@@ -20,9 +20,9 @@ std::vector<double> solve_tridiag(std::string filename) {
 		matrix[n * 4 + i + 1] = -matrix[n * 2 + i] / (matrix[i] * matrix[n * 4 + i] + matrix[n + i]);
 		matrix[n * 5 + i + 1] = (matrix[n * 3 + i] - matrix[i] * matrix[n * 5 + 1]) / (matrix[i] * matrix[n * 4 + i] + matrix[n + i]);
 	}
-	
+
 	matrix[n * 7 - 1] = (matrix[n * 4 - 1] - matrix[n - 1] * matrix[n * 6 - 1]) / (matrix[n - 1] * matrix[n * 5 - 1] + matrix[n * 2 - 1]);
-	
+
 	for (int i = n - 2; i >= 0; i--) {
 		matrix[n * 6 + i] = matrix[n * 4 + i + 1] * matrix[n * 6 + i + 1] + matrix[n * 5 + i + 1];
 	}
@@ -32,7 +32,7 @@ std::vector<double> solve_tridiag(std::string filename) {
 
 std::vector<double> get_solution(std::string filename) {
 	std::ifstream file;
-	file.open("../../examples/tridiag/" + filename + "/solution.txt");
+	file.open("../examples/tridiag/" + filename + "/solution.txt");
 
 	std::vector<double> solution;
 	double element;
