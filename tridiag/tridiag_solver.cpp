@@ -1,6 +1,5 @@
 #include <fstream>
-#include <vector>
-#include <gtest/gtest.h>
+#include "tridiag_solver.hpp"
 
 std::vector<double> solve_tridiag(std::string filename) {
 	std::ifstream file;
@@ -41,16 +40,5 @@ std::vector<double> get_solution(std::string filename) {
 		solution.push_back(element);
 	}
 
-	for (int i = 0; i < 3; i++) {
-		std::cout << solution[i] << std::endl;
-	}
-
 	return solution;
-}
-
-TEST(tridiag, main) {
-	std::vector<double> calc_solution = solve_tridiag("example01");
-	std::vector<double> true_solution = get_solution("example01");
-	
-	ASSERT_NEAR(calc_solution[0], true_solution[0], 1e-16);
 }

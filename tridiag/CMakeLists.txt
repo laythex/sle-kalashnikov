@@ -5,7 +5,7 @@ find_package(GTest REQUIRED)
 
 enable_testing()
 
-add_executable(tridiag tridiag_solver.cpp)
+add_executable(tridiag main.cpp tridiag_solver.hpp tridiag_solver.cpp)
 target_link_libraries(tridiag GTest::gtest_main)
 
 add_test(Alltest tridiag)
