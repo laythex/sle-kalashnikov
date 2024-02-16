@@ -5,12 +5,14 @@ else ()
     set(HEADERS
         CSRMatrix.hpp
         DenseMatrix.hpp
+        TridiagMatrix.hpp
         tools.hpp
         )
 
     set(SOURCES
         CSRMatrix.cpp
         DenseMatrix.cpp
+        TridiagMatrix.cpp
         tools.cpp
         )
 
