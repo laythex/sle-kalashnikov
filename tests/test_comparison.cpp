@@ -37,7 +37,8 @@ int main() {
             auto end_sparse = std::chrono::high_resolution_clock::now();
             auto nsec_sparse = end_sparse - start_sparse;
             
-            file << 1.0 * nsec_dense.count() / nsec_sparse.count() << '\t';
+            double factor = static_cast<double>(nsec_dense.count() / nsec_sparse.count());
+            file << factor << '\t';
 
             // Чтобы оптимизация не съела умножения
             if (res_dense.size() != res_sparse.size()) {
