@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(cmake_example)
+project(sle-kalashnikov)
 
 add_subdirectory(src)
 
