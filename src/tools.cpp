@@ -7,20 +7,19 @@ double random_double(double min, double max) {
     return d(e);
 }
 
-DenseMatrix generateRandomDenseMatrix(unsigned rows, unsigned cols, double density, double min_el, double max_el) {
+DenseMatrix randomDenseMatrix(unsigned rows, unsigned cols, double density, double min_el, double max_el, bool integer) {
     std::vector<double> data(rows * cols);
+    double el;
     for (unsigned i = 0; i < rows * cols; i++) {
         if (random_double(0, 1) < density) {
-            data[i] = random_double(min_el, max_el);
+            el = random_double(min_el, max_el);
+            data[i] = integer ? trunc(el) : el;
         }
     }
-
-    DenseMatrix dm;
-    dm.initialize(data, cols);
-    return dm;
+    return DenseMatrix(data, cols);
 }
 
-CSRMatrix generateRandomCSRMatrix(unsigned rows, unsigned cols, double density, double min_el, double max_el) {
+CSRMatrix randomCSRMatrix(unsigned rows, unsigned cols, double density, double min_el, double max_el) {
     std::vector<double> data(rows * cols);
     for (unsigned i = 0; i < rows * cols; i++) {
         if (random_double(0, 1) < density) {
@@ -33,7 +32,7 @@ CSRMatrix generateRandomCSRMatrix(unsigned rows, unsigned cols, double density, 
     return csr;
 }
 
-std::vector<double> generateRandomVector(unsigned rows, double min_el, double max_el) {
+std::vector<double> randomVector(unsigned rows, double min_el, double max_el) {
     std::vector<double> res(rows);
     for (unsigned i = 0; i < rows; i++) {
         res[i] = random_double(min_el, max_el);

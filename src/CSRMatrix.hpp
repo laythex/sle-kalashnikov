@@ -5,8 +5,6 @@
 
 class CSRMatrix {
     public:
-        CSRMatrix();
-
         void initialize(const std::vector<double>& vals, const std::vector<unsigned>& cols, const std::vector<unsigned>& rows);
         void initialize(const std::vector<double>& matrix, unsigned number_of_columns);
 

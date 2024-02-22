@@ -5,8 +5,6 @@
 
 class TridiagMatrix {
     public:
-        TridiagMatrix();
-
         void initialize(const std::vector<double>& a_short_data, const std::vector<double>& b_data, const std::vector<double>& c_short_data);
         
         // double operator()(int i, int j) const;

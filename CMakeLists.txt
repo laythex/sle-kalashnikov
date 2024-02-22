@@ -3,7 +3,5 @@ project(sle-kalashnikov)
 
 add_subdirectory(src)
 
-if (WITH_TESTS)
-    enable_testing()
-    add_subdirectory(tests)
-endif ()
+enable_testing()
+add_subdirectory(tests)

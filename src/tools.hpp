@@ -9,6 +9,6 @@
 
 double random_double(double min, double max);
 
-DenseMatrix generateRandomDenseMatrix(unsigned rows, unsigned cols, double density = 1, double min_el = 0, double max_el = 1);
-CSRMatrix generateRandomCSRMatrix(unsigned rows, unsigned cols, double density, double min_el = 0, double max_el = 1);
-std::vector<double> generateRandomVector(unsigned rows, double min_el = 0, double max_el = 1);
+DenseMatrix randomDenseMatrix(unsigned rows, unsigned cols, double density = 1, double min_el = 0, double max_el = 1, bool integer = false);
+CSRMatrix randomCSRMatrix(unsigned rows, unsigned cols, double density, double min_el = 0, double max_el = 1);
+std::vector<double> randomVector(unsigned rows, double min_el = 0, double max_el = 1);

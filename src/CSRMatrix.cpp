@@ -1,7 +1,5 @@
 #include "CSRMatrix.hpp"
 
-CSRMatrix::CSRMatrix() {}
-
 void CSRMatrix::initialize(const std::vector<double>& vals, const std::vector<unsigned>& cols, const std::vector<unsigned>& rows) {
     this->vals = vals;
     this->cols = cols;

@@ -1,7 +1,5 @@
 #include "TridiagMatrix.hpp"
 
-TridiagMatrix::TridiagMatrix() {}
-
 void TridiagMatrix::initialize(const std::vector<double>& a_short_data, const std::vector<double>& b_data, const std::vector<double>& c_short_data) {
 	a = a_short_data;
 	b = b_data;

@@ -7,6 +7,7 @@ else ()
         DenseMatrix.hpp
         TridiagMatrix.hpp
         tools.hpp
+        HouseholderQR.hpp
         )
 
     set(SOURCES
@@ -14,6 +15,7 @@ else ()
         DenseMatrix.cpp
         TridiagMatrix.cpp
         tools.cpp
+        HouseholderQR.cpp
         )
 
     source_group("Header Files" FILES ${HEADERS})
