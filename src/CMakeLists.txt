@@ -8,6 +8,7 @@ else ()
         TridiagMatrix.hpp
         tools.hpp
         HouseholderQR.hpp
+        solvers.hpp
         )
 
     set(SOURCES
@@ -16,6 +17,7 @@ else ()
         TridiagMatrix.cpp
         tools.cpp
         HouseholderQR.cpp
+        solvers.cpp
         )
 
     source_group("Header Files" FILES ${HEADERS})
