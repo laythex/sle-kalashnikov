@@ -1,11 +1,5 @@
 #include "DenseMatrix.hpp"
 
-void DenseMatrix::initialize(const std::vector<double>& matrix_data, unsigned number_of_columns) {
-    data = matrix_data;
-    cols = number_of_columns;
-    rows = data.size() / cols;
-}
-
 DenseMatrix::DenseMatrix() : rows(0),  cols(0), data({}) {}
 DenseMatrix::DenseMatrix(const std::vector<double>& data, unsigned cols) : rows(data.size() / cols), cols(cols), data(data) {}
 
@@ -107,7 +101,7 @@ unsigned DenseMatrix::getCols() const {
     return cols;
 }
 
-std::vector<double> DenseMatrix::getData() const {
+const std::vector<double>& DenseMatrix::getData() const {
     return data;
 }
 

@@ -5,7 +5,7 @@
 #include "HouseholderQR.hpp"
 
 TEST(Householder, main) {
-	DenseMatrix A = randomDenseMatrix(100, 100, 1, -1, 1);
+	DenseMatrix A = _random::getDenseMatrix(100, 100, 1, -1, 1);
     HouseholderQR hhqr = HouseholderQR(A);
     DenseMatrix Q = hhqr.getQ();
     DenseMatrix R = hhqr.getR();

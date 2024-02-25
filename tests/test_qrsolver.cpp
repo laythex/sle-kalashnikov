@@ -5,14 +5,14 @@
 #include "solvers.hpp"
 
 TEST(QRsolver, main) {
-	DenseMatrix A = DenseMatrix({1, 3, 4,
+    DenseMatrix A = DenseMatrix({1, 3, 4,
                                  5, 3, 2,
                                  2, 6, 1}, 3);
     DenseMatrix x_real = DenseMatrix({1, 1, 1}, 1);
     DenseMatrix b = A * x_real;
 
     HouseholderQR hhqr = HouseholderQR(A);
-    DenseMatrix x_calc = solveQR(hhqr.getQ(), hhqr.getR(), b);
+    DenseMatrix x_calc = solvers::QR(hhqr.getQ(), hhqr.getR(), b);
 	
-	EXPECT_TRUE(x_calc == x_real);
+    EXPECT_TRUE(x_calc == x_real);
 }

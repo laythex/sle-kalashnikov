@@ -8,7 +8,6 @@ class DenseMatrix {
     public:
         DenseMatrix();
         DenseMatrix(const std::vector<double>& data, unsigned cols);
-        void initialize(const std::vector<double>& matrix_data, unsigned number_of_columns);
         
         double operator()(unsigned i, unsigned j) const;
         std::vector<double> operator*(const std::vector<double>& v) const;
@@ -24,9 +23,9 @@ class DenseMatrix {
 
         unsigned getRows() const;
         unsigned getCols() const;
-        std::vector<double> getData() const;
+        const std::vector<double>& getData() const;
     
-    protected:
+    private:
         unsigned rows, cols;
         std::vector<double> data;
 };

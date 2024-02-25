@@ -1,12 +1,10 @@
 #include "CSRMatrix.hpp"
 
-void CSRMatrix::initialize(const std::vector<double>& vals, const std::vector<unsigned>& cols, const std::vector<unsigned>& rows) {
-    this->vals = vals;
-    this->cols = cols;
-    this->rows = rows;
-}
+CSRMatrix::CSRMatrix() : vals({}), cols({}), rows({}) {}
 
-void CSRMatrix::initialize(const std::vector<double>& matrix, unsigned number_of_columns) {
+CSRMatrix::CSRMatrix(const std::vector<double>& vals, const std::vector<unsigned>& cols, const std::vector<unsigned>& rows) : vals(vals), cols(cols), rows(rows) {}
+
+CSRMatrix::CSRMatrix(const std::vector<double>& matrix, unsigned number_of_columns) {
     for (unsigned i = 0; i < matrix.size(); i++) {
         if (i % number_of_columns == 0) {
             rows.push_back(vals.size());
@@ -39,51 +37,46 @@ std::vector<double> CSRMatrix::operator*(const std::vector<double>& v) const {
     return res;
 }
 
-double CSRMatrix::operator*(const CSRMatrix& other) const {
-    double res = 0;
-    for (unsigned i = 1; i < rows.size(); i++) {
-        if ((rows[i] - rows[i - 1]) * (other.rows[i] - other.rows[i - 1])) {
-            res += vals[rows[i - 1]] * other.vals[other.rows[i - 1]];
-        }
-    }
-    return res;
+double CSRMatrix::valsAt(unsigned i) const {
+    return vals[i];
 }
 
-CSRMatrix CSRMatrix::operator+(const CSRMatrix& other) const {
-    CSRMatrix res;
-    res.rows.push_back(0);
+unsigned CSRMatrix::colsAt(unsigned i) const {
+    return cols[i];
+}
 
-    for (unsigned i = 1; i < rows.size(); i++) {
-        unsigned left = rows[i] - rows[i - 1];
-        unsigned right = other.rows[i] - other.rows[i - 1];
+unsigned CSRMatrix::rowsAt(unsigned i) const {
+    return rows[i];
+}
 
-        if (left || right) {
-            res.vals.push_back(left * vals[rows[i - 1]] + right * other.vals[other.rows[i - 1]]);
-            res.cols.push_back(0);
-        }
+unsigned CSRMatrix::getValsSize() const {
+    return vals.size();
+}
 
-        res.rows.push_back(res.rows.back() + (left || right));
-    }
+unsigned CSRMatrix::getColsSize() const {
+    return cols.size();
+}
 
-    return res;
+unsigned CSRMatrix::getRowsSize() const {
+    return rows.size();
 }
 
 std::ostream& operator<<(std::ostream& os, const CSRMatrix& csr) {
     os << "Vals = { "; 
-    for (unsigned i = 0; i < csr.vals.size(); i++) {
-        os << csr.vals[i] << ' ';
+    for (unsigned i = 0; i < csr.getValsSize(); i++) {
+        os << csr.valsAt(i) << ' ';
     }
     os << "}" << std::endl;
 
     os << "Cols = { "; 
-    for (unsigned i = 0; i < csr.cols.size(); i++) {
-        os << csr.cols[i] << ' ';
+    for (unsigned i = 0; i < csr.getColsSize(); i++) {
+        os << csr.colsAt(i) << ' ';
     }
     os << "}" << std::endl;
 
     os << "Rows = { "; 
-    for (unsigned i = 0; i < csr.rows.size(); i++) {
-        os << csr.rows[i] << ' ';
+    for (unsigned i = 0; i < csr.getRowsSize(); i++) {
+        os << csr.rowsAt(i) << ' ';
     }
     os << "}" << std::endl;
 

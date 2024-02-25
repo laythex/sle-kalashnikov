@@ -19,13 +19,13 @@ int main() {
     file << cols_step << '\t' << max_cols << '\t' << density_step << std::endl;
 
     for (unsigned cols = cols_step; cols <= max_cols; cols += cols_step) {
-        vec = randomVector(cols);
-        dense = randomDenseMatrix(cols, cols);
+        vec = _random::getVector(cols);
+        dense = _random::getDenseMatrix(cols, cols);
 
         std::cout << cols << std::endl;
 
         for (double density = density_step; density <= 1; density += density_step) {
-            sparse = randomCSRMatrix(cols, cols, density);
+            sparse = _random::getCSRMatrix(cols, cols, density);
 
             auto start_dense = std::chrono::high_resolution_clock::now(); 
             res_dense = dense * vec;
