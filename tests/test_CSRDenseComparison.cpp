@@ -5,10 +5,9 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
-#include <fstream>
 
 int main() {
-    std::ofstream file("../out.txt", std::ios::out);
+    std::ofstream file("../tests/CSRDenseComparison/out.txt", std::ios::out);
 
     unsigned cols_step = 20, max_cols = 1000;
     double density_step = 0.005;

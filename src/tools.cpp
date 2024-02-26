@@ -58,8 +58,11 @@ double norm2(const std::vector<double>& vec) {
 }
 
 std::ostream& operator<<(std::ostream& os, const std::vector<double>& vec) {
+    double eps = 1e-13, el;
+
     for (unsigned i = 0; i < vec.size(); i++) {
-        os << vec[i] << ' ';
+        el = fabs(vec[i]) > eps ? vec[i] : 0;
+        os << el << ' ';
     }
 
     return os;
@@ -106,6 +109,23 @@ std::vector<double> _random::getVector(unsigned rows, double min_el, double max_
     }
 
     return res;
+}
+
+CSRMatrix _random::getDiagonallyDominantCSRMatrix(unsigned rows, double density, double min_el, double max_el) {
+    std::vector<double> data(rows * rows);
+    double maxNonDiag = (max_el + min_el) / 2 / rows, sum = 0;
+
+    for (unsigned i = 0; i < rows; i++) {
+        for (unsigned j = 0; j < rows; j++) {
+            if (_random::getDouble(0, 1) < density && i != j) {
+                data[i * rows + j] = _random::getDouble(min_el, maxNonDiag);
+                sum += data[i * rows + j];
+            }
+        }
+        data[i * rows + i] = _random::getDouble(sum, max_el);
+    }
+
+    return CSRMatrix(data, rows);
 }
 
 std::vector<double> Jacobi::multiply(const CSRMatrix& csr, const std::vector<double>& v) {
