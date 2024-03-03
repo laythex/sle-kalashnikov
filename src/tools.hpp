@@ -9,14 +9,13 @@
 
 std::vector<double> operator*(const std::vector<double>& left, double right);
 std::vector<double> operator*(double left, const std::vector<double>&  right);
+std::vector<double> operator/(const std::vector<double>& left, double right);
 std::vector<double> operator+(const std::vector<double>& left, const std::vector<double>& right);
 std::vector<double> operator-(const std::vector<double>& left, const std::vector<double>& right);
 double operator*(const std::vector<double>& left, const std::vector<double>& right);
-
 bool operator==(const std::vector<double>& left, const std::vector<double>& right);
-
 double norm2(const std::vector<double>& vec);
-
+std::vector<double> normalize(const std::vector<double>& vec);
 std::ostream& operator<<(std::ostream& os, const std::vector<double>& vec);
 
 namespace _random {
@@ -28,11 +27,17 @@ namespace _random {
     CSRMatrix getDiagonallyDominantCSRMatrix(unsigned rows, double density, double min_el = 0, double max_el = 1000);
 }
 
-namespace Jacobi {
+namespace JacobiTools {
     std::vector<double> multiply(const CSRMatrix& csr, const std::vector<double>& v);
     CSRMatrix inverseDiagonal(const CSRMatrix& csr);
 }
 
-namespace GaussSeidel {
+namespace GaussSeidelTools {
     std::vector<double> inverseDiagonal(const CSRMatrix& csr);
+}
+
+namespace FPIAcceleratedTools {
+    std::vector<size_t> calcPermutations(unsigned n);
+    double calcMaxEigenvalue(const CSRMatrix& A, double precision);
+    std::vector<double> calcChebyshevRoots(unsigned n);
 }

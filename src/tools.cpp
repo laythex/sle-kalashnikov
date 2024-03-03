@@ -15,6 +15,10 @@ std::vector<double> operator*(double left, const std::vector<double>&  right) {
     return right * left;
 }
 
+std::vector<double> operator/(const std::vector<double>& left, double right) {
+    return left * (1 / right);
+}
+
 std::vector<double> operator+(const std::vector<double>& left, const std::vector<double>& right) {
     unsigned n = left.size();
     std::vector<double> res(n);
@@ -42,7 +46,7 @@ double operator*(const std::vector<double>& left, const std::vector<double>& rig
 }
 
 bool operator==(const std::vector<double>& left, const std::vector<double>& right) {
-    double eps = 1e-13;
+    double eps = 1e-12;
 
     for (unsigned i = 0; i < left.size(); i++) {
         if (fabs(left[i] - right[i]) > eps) {
@@ -57,8 +61,12 @@ double norm2(const std::vector<double>& vec) {
     return sqrt(vec * vec);
 }
 
+std::vector<double> normalize(const std::vector<double>& vec) {
+    return vec / norm2(vec);
+}
+
 std::ostream& operator<<(std::ostream& os, const std::vector<double>& vec) {
-    double eps = 1e-13, el;
+    double eps = 1e-12, el;
 
     for (unsigned i = 0; i < vec.size(); i++) {
         el = fabs(vec[i]) > eps ? vec[i] : 0;
@@ -128,7 +136,7 @@ CSRMatrix _random::getDiagonallyDominantCSRMatrix(unsigned rows, double density,
     return CSRMatrix(data, rows);
 }
 
-std::vector<double> Jacobi::multiply(const CSRMatrix& csr, const std::vector<double>& v) {
+std::vector<double> JacobiTools::multiply(const CSRMatrix& csr, const std::vector<double>& v) {
     std::vector<double> res(v.size());
 
     for (unsigned i = 0; i < v.size(); i++) {
@@ -142,7 +150,7 @@ std::vector<double> Jacobi::multiply(const CSRMatrix& csr, const std::vector<dou
     return res;
 }
 
-CSRMatrix Jacobi::inverseDiagonal(const CSRMatrix& csr) {
+CSRMatrix JacobiTools::inverseDiagonal(const CSRMatrix& csr) {
     unsigned n = csr.getRowsSize() - 1;
     std::vector<double> vals(n);
     std::vector<unsigned> cols(n), rows(n + 1);
@@ -160,7 +168,7 @@ CSRMatrix Jacobi::inverseDiagonal(const CSRMatrix& csr) {
     return CSRMatrix(vals, cols, rows);
 }
 
-std::vector<double> GaussSeidel::inverseDiagonal(const CSRMatrix& csr) {
+std::vector<double> GaussSeidelTools::inverseDiagonal(const CSRMatrix& csr) {
     unsigned n = csr.getRowsSize() - 1;
     std::vector<double> res(n);
 
@@ -173,4 +181,53 @@ std::vector<double> GaussSeidel::inverseDiagonal(const CSRMatrix& csr) {
     }
 
     return res;
+}
+
+std::vector<size_t> FPIAcceleratedTools::calcPermutations(unsigned n) {
+    std::vector<size_t> permutations(n);
+    size_t lg = log2(n), step = n;
+    for (size_t i = 0; i < lg; i++) {
+        for (size_t j = 0; j < n; j += step) {
+            permutations[j + step / 2] = n / (step / 2) - 1 - permutations[j];
+        }
+        step /= 2;
+    }
+    return permutations;
+}
+
+double FPIAcceleratedTools::calcMaxEigenvalue(const CSRMatrix& A, double precision) {
+    size_t n = A.getRowsSize() - 1;
+    std::vector<double> r(n, 1);
+    double prev, eigenval = 0;
+    do {
+        prev = eigenval;
+        r = normalize(A * r);
+        eigenval = r * (A * r) / (r * r);
+    } while (fabs(eigenval - prev) > precision);
+
+    return eigenval;
+}
+
+std::vector<double> FPIAcceleratedTools::calcChebyshevRoots(unsigned n) {
+    std::vector<double> roots(n);
+
+    // Только один синус!
+    // При большом n синус можно посчитать приближенно
+    // и вообще без тригонометрии обойтись
+    double s_p_2n = sin(M_PI / 2 / n);
+    double c_p_2n = sqrt(1 - s_p_2n * s_p_2n); // Первый корень всегда > 0
+    double s_p_n = 2 * s_p_2n * c_p_2n;
+    double c_p_n = c_p_2n * c_p_2n - s_p_2n * s_p_2n;
+    
+    double s = s_p_2n;
+    roots[0] = c_p_2n;
+    for (size_t i = 1; i < n / 2; i++) {
+        roots[i] = roots[i - 1] * c_p_n - s * s_p_n;
+        s = s * c_p_n + roots[i - 1] * s_p_n;
+    }
+    for (size_t i = n / 2; i < n; i++) {
+        roots[i] = -roots[n - i - 1];
+    }
+
+    return roots;
 }

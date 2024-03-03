@@ -31,21 +31,20 @@ std::vector<double> solvers::fixedPointIteration(const CSRMatrix& A, const std::
 
 std::vector<double> solvers::Jacobi(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double> x0, double breakpointResidual) {
     std::vector<double> x = x0;
-    CSRMatrix d = Jacobi::inverseDiagonal(A);
+    CSRMatrix d = JacobiTools::inverseDiagonal(A);
     double residual = norm2(A * x - b);
 
     while (breakpointResidual < residual) {
-        x = d * (b - Jacobi::multiply(A, x));
+        x = d * (b - JacobiTools::multiply(A, x));
         residual = norm2(A * x - b);
     }
 
     return x;
 }
 
-#include <iostream>
 std::vector<double> solvers::GaussSeidel(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double> x0, double breakpointResidual) {
     std::vector<double> x = x0;
-    std::vector<double> d = GaussSeidel::inverseDiagonal(A);
+    std::vector<double> d = GaussSeidelTools::inverseDiagonal(A);
     double residual = norm2(A * x - b), tmp;
 
     while (breakpointResidual < residual) {
@@ -63,3 +62,27 @@ std::vector<double> solvers::GaussSeidel(const CSRMatrix& A, const std::vector<d
 
     return x;
 }
+
+std::vector<double> solvers::FPIAccelerated(const CSRMatrix& A, const std::vector<double>& b, unsigned n, const std::vector<double> x0, double breakpointResidual) {
+    std::vector<double> x = x0;
+    std::vector<double> residualVector = A * x - b;
+
+    std::vector<size_t> permutations = FPIAcceleratedTools::calcPermutations(n);
+    double lambda_max = FPIAcceleratedTools::calcMaxEigenvalue(A, 1e-3);
+    std::vector<double> roots = FPIAcceleratedTools::calcChebyshevRoots(n);
+
+    // Сдвигаем корни (lambda_min = 0)
+    for (size_t i = 0; i < n; i++) {
+        roots[i] = lambda_max / 2 * (1 + roots[i]);
+    }
+    
+    while (breakpointResidual < norm2(residualVector)) { 
+        for (size_t i = 0; i < n; i++) {
+            x = x - residualVector / roots[permutations[i]];
+            residualVector = A * x - b;
+        }
+    }
+
+    return x;
+}
+
