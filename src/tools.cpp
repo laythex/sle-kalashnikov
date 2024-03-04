@@ -183,19 +183,7 @@ std::vector<double> GaussSeidelTools::inverseDiagonal(const CSRMatrix& csr) {
     return res;
 }
 
-std::vector<size_t> FPIAcceleratedTools::calcPermutations(unsigned n) {
-    std::vector<size_t> permutations(n);
-    size_t lg = log2(n), step = n;
-    for (size_t i = 0; i < lg; i++) {
-        for (size_t j = 0; j < n; j += step) {
-            permutations[j + step / 2] = n / (step / 2) - 1 - permutations[j];
-        }
-        step /= 2;
-    }
-    return permutations;
-}
-
-double FPIAcceleratedTools::calcMaxEigenvalue(const CSRMatrix& A, double precision) {
+double FPIATools::calcMaxEigenvalue(const CSRMatrix& A, double precision) {
     size_t n = A.getRowsSize() - 1;
     std::vector<double> r(n, 1);
     double prev, eigenval = 0;
@@ -206,28 +194,4 @@ double FPIAcceleratedTools::calcMaxEigenvalue(const CSRMatrix& A, double precisi
     } while (fabs(eigenval - prev) > precision);
 
     return eigenval;
-}
-
-std::vector<double> FPIAcceleratedTools::calcChebyshevRoots(unsigned n) {
-    std::vector<double> roots(n);
-
-    // Только один синус!
-    // При большом n синус можно посчитать приближенно
-    // и вообще без тригонометрии обойтись
-    double s_p_2n = sin(M_PI / 2 / n);
-    double c_p_2n = sqrt(1 - s_p_2n * s_p_2n); // Первый корень всегда > 0
-    double s_p_n = 2 * s_p_2n * c_p_2n;
-    double c_p_n = c_p_2n * c_p_2n - s_p_2n * s_p_2n;
-    
-    double s = s_p_2n;
-    roots[0] = c_p_2n;
-    for (size_t i = 1; i < n / 2; i++) {
-        roots[i] = roots[i - 1] * c_p_n - s * s_p_n;
-        s = s * c_p_n + roots[i - 1] * s_p_n;
-    }
-    for (size_t i = n / 2; i < n; i++) {
-        roots[i] = -roots[n - i - 1];
-    }
-
-    return roots;
 }

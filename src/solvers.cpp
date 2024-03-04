@@ -63,15 +63,16 @@ std::vector<double> solvers::GaussSeidel(const CSRMatrix& A, const std::vector<d
     return x;
 }
 
-std::vector<double> solvers::FPIAccelerated(const CSRMatrix& A, const std::vector<double>& b, double lambda, const std::vector<double>& roots, const std::vector<size_t>& permutations, const std::vector<double> x0, double breakpointResidual) {
+std::vector<double> solvers::FPIAccelerated(const CSRMatrix& A, const std::vector<double>& b, double lambda_min, double lambda_max, const std::vector<double> x0, double breakpointResidual) {
     std::vector<double> x = x0;
     std::vector<double> residualVector = A * x - b;
-    size_t n = roots.size();
     
     double tau;
+    double k1 = (lambda_max + lambda_min) / 2, k2 = (lambda_max - lambda_min) / 2;
+    
     while (breakpointResidual < norm2(residualVector)) { 
-        for (size_t i = 0; i < n; i++) {
-            tau = 1 / (lambda / 2 * (1 + roots[permutations[i]]));
+        for (size_t i = 0; i < FPIATools::nroots; i++) {
+            tau = 1 / (k1 + k2 * FPIATools::roots[FPIATools::permutations[i]]);
             x = x - tau * residualVector;
             residualVector = A * x - b;
         }
