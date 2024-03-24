@@ -11,12 +11,6 @@ void TridiagMatrix::initialize(const std::vector<double>& a_short_data, const st
 	n = b.size();
 }
 
-// double TridiagMatrix::operator()(int i, int j) const {}
-// std::vector<double> TridiagMatrix::voperator*(const std::vector<double>& v) const {}
-// TridiagMatrix TridiagMatrix::operator+(const TridiagMatrix& other) const {}
-// double TridiagMatrix::operator*(const TridiagMatrix& other) const {}
-// std::ostream& operator<<(std::ostream& os, const TridiagMatrix& tm) {}
-
 std::vector<double> TridiagMatrix::solve(const std::vector<double>& d) const {
 	std::vector<double> p(n), q(n), x(n);
 

@@ -6,9 +6,27 @@
 #include <fstream>
 #include <chrono>
 
+// Трехдиагональная матрица с диагнальным преобладанием
+CSRMatrix getTestMatrix(unsigned rows) {
+    std::vector<double> data(rows * rows);
+    double a = _random::getDouble(0, 1);
+    double b = _random::getDouble(0, a / 2);
+
+    for (size_t i = 0; i < rows; i++) {
+        for (size_t j = 0; j < rows; j++) {
+            if (i == j) {
+                data[i * rows + j] = a;
+            } else if (i == j + 1 || j == i + 1) {
+                data[i * rows + j] = b;
+            }
+        }
+    }
+
+    return CSRMatrix(data, rows);
+}
+
 int main() {
     unsigned rows_step = 10, max_rows = 1000;
-    double density = 0.01;
 
     CSRMatrix A;
     std::vector<double> b, x_real, x_calc, x0;
@@ -19,7 +37,7 @@ int main() {
     std::ofstream fileFPIA("../tests/accelerationComparison/FPIA.txt", std::ios::out);
 
     for (unsigned n = 0; n <= max_rows; n += rows_step) {
-        A = _random::getDiagonallyDominantCSRMatrix(n, density, 0, 1);
+        A = _random::getTestMatrix(n);
         x_real = _random::getVector(n);
         b = A * x_real;
         x0 = _random::getVector(n);

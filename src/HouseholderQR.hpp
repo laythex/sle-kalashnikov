@@ -1,17 +1,18 @@
 #pragma once
 
 #include "DenseMatrix.hpp"
+#include "tools.hpp"
 
 class HouseholderQR {
     public:
         HouseholderQR(DenseMatrix dm); 
         
-        DenseMatrix getQ() const;
-        DenseMatrix getR() const;
+        DenseMatrix& getQ();
+        DenseMatrix& getR();
 
     protected:
         void factorize();
-        DenseMatrix theta(const DenseMatrix& x, const DenseMatrix& v) const;
+        std::vector<double> theta(const std::vector<double>& x, const std::vector<double>& v) const;
 
         DenseMatrix A, Q, R;
 };

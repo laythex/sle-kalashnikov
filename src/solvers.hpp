@@ -13,5 +13,9 @@ namespace solvers {
 
     std::vector<double> GaussSeidel(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double> x0, double breakpointResidual);
 
+    std::vector<double> SymGaussSeidel(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double> x0, double breakpointResidual);
+
     std::vector<double> FPIAccelerated(const CSRMatrix& A, const std::vector<double>& b, double lambda_min, double lambda_max, std::vector<double> x0, double breakpointResidual);
+
+    std::vector<double> GradientDescent(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double> x0, double breakpointResidual);
 }

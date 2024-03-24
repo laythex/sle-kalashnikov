@@ -46,7 +46,7 @@ double operator*(const std::vector<double>& left, const std::vector<double>& rig
 }
 
 bool operator==(const std::vector<double>& left, const std::vector<double>& right) {
-    double eps = 1e-12;
+    double eps = 1e-11;
 
     for (unsigned i = 0; i < left.size(); i++) {
         if (fabs(left[i] - right[i]) > eps) {
@@ -74,6 +74,13 @@ std::ostream& operator<<(std::ostream& os, const std::vector<double>& vec) {
     }
 
     return os;
+}
+
+unsigned _random::getUnsigned(unsigned min, unsigned max) {
+    unsigned seed = std::chrono::steady_clock::now().time_since_epoch().count();
+    static std::default_random_engine e(seed);
+    std::uniform_int_distribution<unsigned> d(min, max);
+    return d(e);
 }
 
 double _random::getDouble(double min, double max) {
@@ -119,18 +126,19 @@ std::vector<double> _random::getVector(unsigned rows, double min_el, double max_
     return res;
 }
 
-CSRMatrix _random::getDiagonallyDominantCSRMatrix(unsigned rows, double density, double min_el, double max_el) {
+CSRMatrix _random::getTestMatrix(unsigned rows) {
     std::vector<double> data(rows * rows);
-    double maxNonDiag = (max_el + min_el) / 2 / rows, sum = 0;
+    double a = _random::getDouble(0, 1);
+    double b = _random::getDouble(0, a / 2);
 
-    for (unsigned i = 0; i < rows; i++) {
-        for (unsigned j = 0; j < rows; j++) {
-            if (_random::getDouble(0, 1) < density && i != j) {
-                data[i * rows + j] = _random::getDouble(min_el, maxNonDiag);
-                sum += data[i * rows + j];
+    for (size_t i = 0; i < rows; i++) {
+        for (size_t j = 0; j < rows; j++) {
+            if (i == j) {
+                data[i * rows + j] = a;
+            } else if (i == j + 1 || j == i + 1) {
+                data[i * rows + j] = b;
             }
         }
-        data[i * rows + i] = _random::getDouble(sum, max_el);
     }
 
     return CSRMatrix(data, rows);

@@ -20,12 +20,12 @@ std::vector<double> normalize(const std::vector<double>& vec);
 std::ostream& operator<<(std::ostream& os, const std::vector<double>& vec);
 
 namespace _random {
+    unsigned getUnsigned(unsigned min, unsigned max);
     double getDouble(double min, double max);
     DenseMatrix getDenseMatrix(unsigned rows, unsigned cols, double density = 1, double min_el = 0, double max_el = 1, bool integer = false);
     CSRMatrix getCSRMatrix(unsigned rows, unsigned cols, double density, double min_el = 0, double max_el = 1);
     std::vector<double> getVector(unsigned rows, double min_el = 0, double max_el = 1);
-
-    CSRMatrix getDiagonallyDominantCSRMatrix(unsigned rows, double density, double min_el = 0, double max_el = 1000);
+    CSRMatrix getTestMatrix(unsigned rows);
 }
 
 namespace JacobiTools {

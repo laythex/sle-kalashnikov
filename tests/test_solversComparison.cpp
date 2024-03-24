@@ -8,7 +8,6 @@
 
 int main() {
     unsigned rows_step = 10, max_rows = 1000;
-    double density = 0.01;
 
     CSRMatrix A;
     std::vector<double> b, x_real, x_calc, x0;
@@ -18,7 +17,7 @@ int main() {
     std::ofstream fileGS("../tests/solversComparison/GS.txt", std::ios::out);
 
     for (unsigned n = 0; n <= max_rows; n += rows_step) {
-        A = _random::getDiagonallyDominantCSRMatrix(n, density, 0, 1);
+        A = _random::getTestMatrix(n);
         x_real = _random::getVector(n);
         b = A * x_real;
         x0 = _random::getVector(n);

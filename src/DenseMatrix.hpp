@@ -7,9 +7,10 @@
 class DenseMatrix {
     public:
         DenseMatrix();
-        DenseMatrix(const std::vector<double>& data, unsigned cols);
+        DenseMatrix(const std::vector<double>& data, size_t cols);
         
-        double operator()(unsigned i, unsigned j) const;
+        double& operator()(size_t i, size_t j);
+        double at(size_t i, size_t j) const;
         std::vector<double> operator*(const std::vector<double>& v) const;
         DenseMatrix operator+(const DenseMatrix& other) const;
         DenseMatrix operator-(const DenseMatrix& other) const;
@@ -17,26 +18,25 @@ class DenseMatrix {
         DenseMatrix operator*(double x) const;
         DenseMatrix operator/(double x) const;
         bool operator==(const DenseMatrix& other) const;
-        operator double() const;
         DenseMatrix transpose() const;
         double norm() const;
 
-        unsigned getRows() const;
-        unsigned getCols() const;
+        size_t getRows() const;
+        size_t getCols() const;
         const std::vector<double>& getData() const;
     
     private:
-        unsigned rows, cols;
+        size_t rows, cols;
         std::vector<double> data;
 };
 
 std::ostream& operator<<(std::ostream& os, const DenseMatrix& dm);
 
-DenseMatrix identity(unsigned n, unsigned m);
-DenseMatrix identity(unsigned n);
+DenseMatrix identity(size_t n, size_t m);
+DenseMatrix identity(size_t n);
 
-DenseMatrix zeros(unsigned n, unsigned m);
-DenseMatrix zeros(unsigned n);
+DenseMatrix zeros(size_t n, size_t m);
+DenseMatrix zeros(size_t n);
 
-DenseMatrix ones(unsigned n, unsigned m);
-DenseMatrix ones(unsigned n);
+DenseMatrix ones(size_t n, size_t m);
+DenseMatrix ones(size_t n);

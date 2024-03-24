@@ -1,17 +1,21 @@
 #include "DenseMatrix.hpp"
 
 DenseMatrix::DenseMatrix() : rows(0),  cols(0), data({}) {}
-DenseMatrix::DenseMatrix(const std::vector<double>& data, unsigned cols) : rows(data.size() / cols), cols(cols), data(data) {}
+DenseMatrix::DenseMatrix(const std::vector<double>& data, size_t cols) : rows(data.size() / cols), cols(cols), data(data) {}
 
-double DenseMatrix::operator()(unsigned i, unsigned j) const {
+double& DenseMatrix::operator()(size_t i, size_t j) {
+    return data[i * cols + j];
+}
+
+double DenseMatrix::at(size_t i, size_t j) const {
     return data[i * cols + j];
 }
 
 std::vector<double> DenseMatrix::operator*(const std::vector<double>& v) const {
     std::vector<double> res(v.size());
-    for (unsigned i = 0; i < rows; i++) {
-        for (unsigned j = 0; j < cols; j++) {
-            res[i] += (*this)(i, j) * v[j];
+    for (size_t i = 0; i < rows; i++) {
+        for (size_t j = 0; j < cols; j++) {
+            res[i] += at(i, j) * v[j];
         }
     }
     return res;
@@ -19,9 +23,9 @@ std::vector<double> DenseMatrix::operator*(const std::vector<double>& v) const {
 
 DenseMatrix DenseMatrix::operator+(const DenseMatrix& other) const {
     std::vector<double> v(data.size());
-    for (unsigned i = 0; i < rows; i++) {
-        for (unsigned j = 0; j < cols; j++) {
-            v[i * cols + j] += (*this)(i, j) + other(i, j);
+    for (size_t i = 0; i < rows; i++) {
+        for (size_t j = 0; j < cols; j++) {
+            v[i * cols + j] += at(i, j) + other.at(i, j);
         }
     }
     return DenseMatrix(v, cols);
@@ -32,12 +36,12 @@ DenseMatrix DenseMatrix::operator-(const DenseMatrix& other) const {
 }
 
 DenseMatrix DenseMatrix::operator*(const DenseMatrix& other) const {
-    unsigned n = rows, m = other.cols;
+    size_t n = rows, m = other.cols;
     std::vector<double> v(n * m);
-    for (unsigned i = 0; i < n; i++) {
-        for (unsigned j = 0; j < m; j++) {
-            for (unsigned k = 0; k < cols; k++) {
-                v[m * i + j] += (*this)(i, k) * other(k, j);
+    for (size_t i = 0; i < n; i++) {
+        for (size_t k = 0; k < cols; k++) {
+            for (size_t j = 0; j < m; j++) {
+                v[m * i + j] += at(i, k) * other.at(k, j);
             }
         }
     }
@@ -46,9 +50,9 @@ DenseMatrix DenseMatrix::operator*(const DenseMatrix& other) const {
 
 DenseMatrix DenseMatrix::operator*(double x) const {
     std::vector<double> v(rows * cols);
-    for (unsigned i = 0; i < rows; i++) {
-        for (unsigned j = 0; j < cols; j++) {
-            v[i * cols + j] = (*this)(i, j) * x;
+    for (size_t i = 0; i < rows; i++) {
+        for (size_t j = 0; j < cols; j++) {
+            v[i * cols + j] = at(i, j) * x;
         }
     }
     return DenseMatrix(v, cols);
@@ -60,9 +64,9 @@ DenseMatrix DenseMatrix::operator/(double x) const {
 
 bool DenseMatrix::operator==(const DenseMatrix& other) const {
     double eps = 1e-13;
-    for (unsigned i = 0; i < rows; i++) {
-        for (unsigned j = 0; j < cols; j++) {
-            if (fabs((*this)(i, j) - other(i, j)) > eps) {
+    for (size_t i = 0; i < rows; i++) {
+        for (size_t j = 0; j < cols; j++) {
+            if (fabs(at(i, j) - other.at(i, j)) > eps) {
                 return false;
             } 
         }
@@ -70,15 +74,11 @@ bool DenseMatrix::operator==(const DenseMatrix& other) const {
     return true;
 }
 
-DenseMatrix::operator double() const {
-    return (*this)(0, 0);
-}
-
 DenseMatrix DenseMatrix::transpose() const {
     std::vector<double> v(rows * cols);
-    for (unsigned i = 0; i < rows; i++) {
-        for (unsigned j = 0; j < cols; j++) {
-            v[rows * j + i] = (*this)(i, j);
+    for (size_t i = 0; i < rows; i++) {
+        for (size_t j = 0; j < cols; j++) {
+            v[rows * j + i] = at(i, j);
         }
     }
     return DenseMatrix(v, rows);
@@ -86,18 +86,18 @@ DenseMatrix DenseMatrix::transpose() const {
 
 double DenseMatrix::norm() const {
     double norm = 0;
-    for (unsigned i = 0; i < rows; i++) {
-        norm += (*this)(i, 0) * (*this)(i, 0);
+    for (size_t i = 0; i < rows; i++) {
+        norm += at(i, 0) * at(i, 0);
     }
     return std::sqrt(norm);
     
 }
 
-unsigned DenseMatrix::getRows() const {
+size_t DenseMatrix::getRows() const {
     return rows;
 }
 
-unsigned DenseMatrix::getCols() const {
+size_t DenseMatrix::getCols() const {
     return cols;
 }
 
@@ -107,9 +107,9 @@ const std::vector<double>& DenseMatrix::getData() const {
 
 std::ostream& operator<<(std::ostream& os, const DenseMatrix& dm) {
     double eps = 1e-13, el;
-    for (unsigned i = 0; i < dm.getRows(); i++) {
-        for (unsigned j = 0; j < dm.getCols(); j++) {
-            el = fabs(dm(i, j)) > eps ? dm(i, j) : 0;
+    for (size_t i = 0; i < dm.getRows(); i++) {
+        for (size_t j = 0; j < dm.getCols(); j++) {
+            el = fabs(dm.at(i, j)) > eps ? dm.at(i, j) : 0;
             os << el << " ";
         }
         os << std::endl;
@@ -117,32 +117,32 @@ std::ostream& operator<<(std::ostream& os, const DenseMatrix& dm) {
     return os;
 }    
 
-DenseMatrix identity(unsigned n, unsigned m) {
+DenseMatrix identity(size_t n, size_t m) {
     std::vector<double> v(n * m);
-    for (unsigned i = 0; i < std::min(n, m); i++) {
+    for (size_t i = 0; i < std::min(n, m); i++) {
         v[m * i + i] = 1;
     }
     return DenseMatrix(v, m);
 }
 
-DenseMatrix identity(unsigned n) {
+DenseMatrix identity(size_t n) {
     return identity(n, n);
 }
 
-DenseMatrix zeros(unsigned n, unsigned m) {
+DenseMatrix zeros(size_t n, size_t m) {
     std::vector<double> v(n * m);
     return DenseMatrix(v, m);
 }
 
-DenseMatrix zeros(unsigned n) {
+DenseMatrix zeros(size_t n) {
     return zeros(n, n);
 }
 
-DenseMatrix ones(unsigned n, unsigned m) {
+DenseMatrix ones(size_t n, size_t m) {
     std::vector<double> v(n * m, 1.0);
     return DenseMatrix(v, m);
 }
 
-DenseMatrix ones(unsigned n) {
+DenseMatrix ones(size_t n) {
     return ones(n, n);
 }
