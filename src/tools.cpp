@@ -144,6 +144,19 @@ CSRMatrix _random::getTestMatrix(unsigned rows) {
     return CSRMatrix(data, rows);
 }
 
+double calcMaxEigenvalue(const CSRMatrix& A, double precision) {
+    size_t n = A.getRowsSize() - 1;
+    std::vector<double> r(n, 1);
+    double prev, eigenval = 0;
+    do {
+        prev = eigenval;
+        r = normalize(A * r);
+        eigenval = r * (A * r) / (r * r);
+    } while (fabs(eigenval - prev) > precision);
+
+    return eigenval;
+}
+
 std::vector<double> JacobiTools::multiply(const CSRMatrix& csr, const std::vector<double>& v) {
     std::vector<double> res(v.size());
 
@@ -191,15 +204,28 @@ std::vector<double> GaussSeidelTools::inverseDiagonal(const CSRMatrix& csr) {
     return res;
 }
 
-double FPIATools::calcMaxEigenvalue(const CSRMatrix& A, double precision) {
-    size_t n = A.getRowsSize() - 1;
-    std::vector<double> r(n, 1);
-    double prev, eigenval = 0;
-    do {
-        prev = eigenval;
-        r = normalize(A * r);
-        eigenval = r * (A * r) / (r * r);
-    } while (fabs(eigenval - prev) > precision);
+std::vector<double> AccGaussSeidelTools::iterate(const CSRMatrix& A, const std::vector<double>& d, const std::vector<double>& b, const std::vector<double>& x) {
+    std::vector<double> _x = x; 
+    double tmp;
+    for (unsigned i = 0; i < _x.size(); i++) {
+            tmp = 0;
+            for (unsigned j = A.rowsAt(i); j < A.rowsAt(i + 1); j++) {
+                if (i != A.colsAt(j)) {
+                    tmp += A.valsAt(j) * _x[A.colsAt(j)];
+                }
+            }
+            _x[i] = d[i] * (b[i] - tmp);
+        }
+ 
+    for (unsigned i = _x.size(); i --> 0;) {
+        tmp = 0;
+        for (unsigned j = A.rowsAt(i); j < A.rowsAt(i + 1); j++) {
+            if (i != A.colsAt(j)) {
+                tmp += A.valsAt(j) * _x[A.colsAt(j)];
+            }
+        }
+        _x[i] = d[i] * (b[i] - tmp);
+    }
 
-    return eigenval;
+    return _x;
 }

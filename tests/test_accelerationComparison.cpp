@@ -42,7 +42,7 @@ int main() {
         b = A * x_real;
         x0 = _random::getVector(n);
 
-        double lambda = FPIATools::calcMaxEigenvalue(A, 1e-3);
+        double lambda = calcMaxEigenvalue(A, 1e-3);
 
         auto startFPI = std::chrono::high_resolution_clock::now(); 
         x_calc = solvers::fixedPointIteration(A, b, 1 / lambda, x0, 1e-12);

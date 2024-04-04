@@ -28,6 +28,8 @@ namespace _random {
     CSRMatrix getTestMatrix(unsigned rows);
 }
 
+double calcMaxEigenvalue(const CSRMatrix& A, double precision);
+
 namespace JacobiTools {
     std::vector<double> multiply(const CSRMatrix& csr, const std::vector<double>& v);
     CSRMatrix inverseDiagonal(const CSRMatrix& csr);
@@ -37,9 +39,11 @@ namespace GaussSeidelTools {
     std::vector<double> inverseDiagonal(const CSRMatrix& csr);
 }
 
-namespace FPIATools {
-    double calcMaxEigenvalue(const CSRMatrix& A, double precision);
+namespace AccGaussSeidelTools {
+    std::vector<double> iterate(const CSRMatrix& A, const std::vector<double>& d, const std::vector<double>& b, const std::vector<double>& x);
+}
 
+namespace FPIATools {
     // Не уверен, что правильно юзаю констэкспр, извини заранее за кринж, код в hpp и глобальные переменные
     constexpr unsigned nroots = 128;
 

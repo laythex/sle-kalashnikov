@@ -6,7 +6,7 @@ DenseMatrix solvers::QR(const DenseMatrix& Q, const DenseMatrix& R, const DenseM
     std::vector<double> x(n);
     double tmp;
 
-    for (int i = n - 1; i >= 0; i--) {
+    for (unsigned i = n - 1; i --> 0;) {
         tmp = 0;
         for (unsigned j = n - 1; j > i; j--) {
             tmp += R.at(i, j) * x[j];
@@ -17,7 +17,7 @@ DenseMatrix solvers::QR(const DenseMatrix& Q, const DenseMatrix& R, const DenseM
     return DenseMatrix(x, 1);
 }
 
-std::vector<double> solvers::fixedPointIteration(const CSRMatrix& A, const std::vector<double>& b, double tau, const std::vector<double> x0, double breakpointResidual) {
+std::vector<double> solvers::fixedPointIteration(const CSRMatrix& A, const std::vector<double>& b, double tau, const std::vector<double>& x0, double breakpointResidual) {
     std::vector<double> x = x0;
     std::vector<double> residualVector = A * x - b;
 
@@ -29,7 +29,7 @@ std::vector<double> solvers::fixedPointIteration(const CSRMatrix& A, const std::
     return x;
 }
 
-std::vector<double> solvers::Jacobi(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double> x0, double breakpointResidual) {
+std::vector<double> solvers::Jacobi(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double>& x0, double breakpointResidual) {
     std::vector<double> x = x0;
     CSRMatrix d = JacobiTools::inverseDiagonal(A);
     double residual = norm2(A * x - b);
@@ -42,7 +42,7 @@ std::vector<double> solvers::Jacobi(const CSRMatrix& A, const std::vector<double
     return x;
 }
 
-std::vector<double> solvers::GaussSeidel(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double> x0, double breakpointResidual) {
+std::vector<double> solvers::GaussSeidel(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double>& x0, double breakpointResidual) {
     std::vector<double> x = x0;
     std::vector<double> d = GaussSeidelTools::inverseDiagonal(A);
     double residual = norm2(A * x - b), tmp;
@@ -63,7 +63,7 @@ std::vector<double> solvers::GaussSeidel(const CSRMatrix& A, const std::vector<d
     return x;
 }
 
-std::vector<double> solvers::SymGaussSeidel(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double> x0, double breakpointResidual) {
+std::vector<double> solvers::SymGaussSeidel(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double>& x0, double breakpointResidual) {
     std::vector<double> x = x0;
     std::vector<double> d = GaussSeidelTools::inverseDiagonal(A);
     double residual = norm2(A * x - b), tmp;
@@ -94,8 +94,31 @@ std::vector<double> solvers::SymGaussSeidel(const CSRMatrix& A, const std::vecto
 
     return x;
 }
+std::vector<double> solvers::AccGaussSeidel(const CSRMatrix& A, const std::vector<double>& b, double rho, const std::vector<double>& x0, double breakpointResidual) {
+    std::vector<double> xp = x0, x, xn;
+    std::vector<double> d = GaussSeidelTools::inverseDiagonal(A);
+    double residual, p = 1 / rho, mp = 0, m = p, mn;
 
-std::vector<double> solvers::FPIAccelerated(const CSRMatrix& A, const std::vector<double>& b, double lambda_min, double lambda_max, const std::vector<double> x0, double breakpointResidual) {
+    x = AccGaussSeidelTools::iterate(A, b, d, xp);
+    residual = norm2(A * x - b);
+
+    while (breakpointResidual < residual) {
+        mn = 2 * p * m - mp;
+        xn = AccGaussSeidelTools::iterate(A, b, d, x);
+        xn = 2 * p * m / mn * xn - mp / mn * xp;
+
+        xp = x;
+        x = xn;
+        mp = m;
+        m = mn;
+
+        residual = norm2(A * xn - b);
+    }
+
+    return xn;
+}
+
+std::vector<double> solvers::FPIAccelerated(const CSRMatrix& A, const std::vector<double>& b, double lambda_min, double lambda_max, const std::vector<double>& x0, double breakpointResidual) {
     std::vector<double> x = x0;
     std::vector<double> residualVector = A * x - b;
     
@@ -113,7 +136,7 @@ std::vector<double> solvers::FPIAccelerated(const CSRMatrix& A, const std::vecto
     return x;
 }
 
-std::vector<double> solvers::GradientDescent(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double> x0, double breakpointResidual) {
+std::vector<double> solvers::GradientDescent(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double>& x0, double breakpointResidual) {
     std::vector<double> x = x0;
     std::vector<double> residualVector = A * x - b;
     double tau;
