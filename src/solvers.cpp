@@ -6,7 +6,7 @@ DenseMatrix solvers::QR(const DenseMatrix& Q, const DenseMatrix& R, const DenseM
     std::vector<double> x(n);
     double tmp;
 
-    for (unsigned i = n - 1; i --> 0;) {
+    for (unsigned i = n; i --> 0;) {
         tmp = 0;
         for (unsigned j = n - 1; j > i; j--) {
             tmp += R.at(i, j) * x[j];
@@ -97,15 +97,15 @@ std::vector<double> solvers::SymGaussSeidel(const CSRMatrix& A, const std::vecto
 std::vector<double> solvers::AccGaussSeidel(const CSRMatrix& A, const std::vector<double>& b, double rho, const std::vector<double>& x0, double breakpointResidual) {
     std::vector<double> xp = x0, x, xn;
     std::vector<double> d = GaussSeidelTools::inverseDiagonal(A);
-    double residual, p = 1 / rho, mp = 0, m = p, mn;
+    double residual, mp = 1, m = 1 / rho, mn;
 
     x = AccGaussSeidelTools::iterate(A, b, d, xp);
     residual = norm2(A * x - b);
 
     while (breakpointResidual < residual) {
-        mn = 2 * p * m - mp;
+        mn = 2 / rho * m - mp;
         xn = AccGaussSeidelTools::iterate(A, b, d, x);
-        xn = 2 * p * m / mn * xn - mp / mn * xp;
+        xn = 2 / rho * m / mn * xn - mp / mn * xp;
 
         xp = x;
         x = xn;

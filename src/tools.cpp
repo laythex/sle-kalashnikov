@@ -204,7 +204,7 @@ std::vector<double> GaussSeidelTools::inverseDiagonal(const CSRMatrix& csr) {
     return res;
 }
 
-std::vector<double> AccGaussSeidelTools::iterate(const CSRMatrix& A, const std::vector<double>& d, const std::vector<double>& b, const std::vector<double>& x) {
+std::vector<double> AccGaussSeidelTools::iterate(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double>& d, const std::vector<double>& x) {
     std::vector<double> _x = x; 
     double tmp;
     for (unsigned i = 0; i < _x.size(); i++) {
