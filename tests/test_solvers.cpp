@@ -104,3 +104,15 @@ TEST(solve, GradientDescent) {
 
     EXPECT_TRUE(x_calc == x_real);
 }
+
+TEST(solve, ConjugateGradient) {
+    unsigned n = _random::getUnsigned(1, 1e2);
+    CSRMatrix A = _random::getTestMatrix(n);
+	std::vector<double> x_real = _random::getVector(n);
+    std::vector<double> b = A * x_real;
+    std::vector<double> x0 = _random::getVector(n);
+
+    std::vector<double> x_calc = solvers::ConjugateGradient(A, b, x0, 1e-14);
+
+    EXPECT_TRUE(x_calc == x_real);
+}

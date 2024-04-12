@@ -20,4 +20,7 @@ namespace solvers {
     std::vector<double> FPIAccelerated(const CSRMatrix& A, const std::vector<double>& b, double lambda_min, double lambda_max, const std::vector<double>& x0, double breakpointResidual);
 
     std::vector<double> GradientDescent(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double>& x0, double breakpointResidual);
+
+    std::vector<double> ConjugateGradient(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double>& x0, double breakpointResidual);
+
 }
