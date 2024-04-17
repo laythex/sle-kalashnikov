@@ -149,3 +149,21 @@ std::vector<double> solvers::GradientDescent(const CSRMatrix& A, const std::vect
 
     return x;
 }
+
+std::vector<double> solvers::ConjugateGradient(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double>& x0, double breakpointResidual) {
+    std::vector<double> x = x0;
+    std::vector<double> r = A * x - b, r0;
+    std::vector<double> d = r;
+    double alpha, beta;
+
+    while (breakpointResidual < norm2(r)) { 
+        alpha = r * r / (d * (A * d));
+        x = x - alpha * d;
+        r0 = r;
+        r = A * x - b;
+        beta = r * r / (r0 * r0);
+        d = r + beta * d;
+    }
+
+    return x;
+}

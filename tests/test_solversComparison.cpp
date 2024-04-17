@@ -38,6 +38,8 @@ int main() {
     std::ofstream fileSGS("../tests/solversComparison/SGS.txt", std::ios::out);
     std::ofstream fileAGS("../tests/solversComparison/AGS.txt", std::ios::out);
     std::ofstream fileGradDes("../tests/solversComparison/GradDes.txt", std::ios::out);
+    std::ofstream fileConjGrad("../tests/solversComparison/ConjGrad.txt", std::ios::out);
+
 
     for (unsigned n = 0; n <= max_rows; n += rows_step) {
         A = _random::getTestMatrix(n);
@@ -89,6 +91,12 @@ int main() {
         auto nsecGradDes = endGradDes - startGradDes;
         fileGradDes << n << '\t' << nsecGradDes.count() << std::endl;
 
+        auto startConjGrad = std::chrono::high_resolution_clock::now(); 
+        x_calc = solvers::GradientDescent(A, b, x0, 1e-12);
+        auto endConjGrad = std::chrono::high_resolution_clock::now();
+        auto nsecConjGrad = endConjGrad - startConjGrad;
+        fileConjGrad << n << '\t' << nsecConjGrad.count() << std::endl;
+
         std::cout << n << std::endl;
     }
 
@@ -99,6 +107,7 @@ int main() {
     fileSGS.close();
     fileAGS.close();
     fileGradDes.close();
+    fileConjGrad.close();
 
     return 0;
 }
