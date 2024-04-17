@@ -9,6 +9,7 @@ else ()
         tools.hpp
         HouseholderQR.hpp
         solvers.hpp
+        HessenbergMatrix.hpp
         )
 
     set(SOURCES
@@ -18,6 +19,7 @@ else ()
         tools.cpp
         HouseholderQR.cpp
         solvers.cpp
+        HessenbergMatrix.cpp
         )
 
     source_group("Header Files" FILES ${HEADERS})

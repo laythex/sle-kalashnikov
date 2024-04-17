@@ -9,9 +9,9 @@ DenseMatrix solvers::QR(const DenseMatrix& Q, const DenseMatrix& R, const DenseM
     for (unsigned i = n; i --> 0;) {
         tmp = 0;
         for (unsigned j = n - 1; j > i; j--) {
-            tmp += R.at(i, j) * x[j];
+            tmp += R(i, j) * x[j];
         }
-        x[i] = (v(i, 0) - tmp) / R.at(i, i); 
+        x[i] = (v(i, 0) - tmp) / R(i, i); 
     }
 
     return DenseMatrix(x, 1);

@@ -157,6 +157,28 @@ double calcMaxEigenvalue(const CSRMatrix& A, double precision) {
     return eigenval;
 }
 
+DenseMatrix GivensRotation(const std::vector<double>& v, size_t k) {
+    size_t n = v.size();
+    DenseMatrix S = identity(n), Si;
+    double x = v[k], x1, c, s;
+
+    for (size_t i = k + 1; i < n; i++) {
+        x1 = sqrt(x * x + v[i] * v[i]);
+        c =  x / x1;
+        s = -v[i] / x1;
+        x = x1;
+
+        Si = identity(n);
+        Si.at(k, k) = c;
+        Si.at(i, i) = c;
+        Si.at(i, k) = s;
+        Si.at(k, i) = -s;
+        S = Si * S;
+    }
+    
+    return S;
+}
+
 std::vector<double> JacobiTools::multiply(const CSRMatrix& csr, const std::vector<double>& v) {
     std::vector<double> res(v.size());
 
