@@ -17,10 +17,9 @@ void HessenbergMatrix::iterate() {
 
     h = norm2(t);
     V.push_back(t / h);
-    H.at(j + 1, j) = h;
 
     rots.push_back(GivensRotation(H.getCol(j), j));
-    H = rots[j] * H;
+    H.at(j, j) = sqrt(H(j, j) * H(j, j) + h * h);
 
     j++;
 }

@@ -31,7 +31,6 @@ namespace _random {
 double calcMaxEigenvalue(const CSRMatrix& A, double precision);
 DenseMatrix GivensRotation(const std::vector<double>& v, size_t k);
 
-
 namespace JacobiTools {
     std::vector<double> multiply(const CSRMatrix& csr, const std::vector<double>& v);
     CSRMatrix inverseDiagonal(const CSRMatrix& csr);

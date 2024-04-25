@@ -78,7 +78,7 @@ DenseMatrix DenseMatrix::transpose() const {
     std::vector<double> v(rows * cols);
     for (size_t i = 0; i < rows; i++) {
         for (size_t j = 0; j < cols; j++) {
-            v[rows * j + i] = operator()(i, j);
+            v[j * rows + i] = operator()(i, j);
         }
     }
     return DenseMatrix(v, rows);
@@ -88,7 +88,7 @@ DenseMatrix DenseMatrix::resize(size_t nrows, size_t ncols) const {
     std::vector<double> v(nrows * ncols);
     for (size_t i = 0; i < rows; i++) {
         for (size_t j = 0; j < cols; j++) {
-            v[nrows * i + j] = operator()(i, j);
+            v[i * ncols + j] = operator()(i, j);
         }
     }
     return DenseMatrix(v, ncols);

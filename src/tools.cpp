@@ -159,23 +159,17 @@ double calcMaxEigenvalue(const CSRMatrix& A, double precision) {
 
 DenseMatrix GivensRotation(const std::vector<double>& v, size_t k) {
     size_t n = v.size();
-    DenseMatrix S = identity(n), Si;
-    double x = v[k], x1, c, s;
+    DenseMatrix S = identity(n);
 
-    for (size_t i = k + 1; i < n; i++) {
-        x1 = sqrt(x * x + v[i] * v[i]);
-        c =  x / x1;
-        s = -v[i] / x1;
-        x = x1;
+    double x = sqrt(v[k] * v[k] + v[k + 1] * v[k + 1]);
+    double c =  v[k] / x;
+    double s = -v[k + 1] / x;
 
-        Si = identity(n);
-        Si.at(k, k) = c;
-        Si.at(i, i) = c;
-        Si.at(i, k) = s;
-        Si.at(k, i) = -s;
-        S = Si * S;
-    }
-    
+    S.at(k, k) = c;
+    S.at(k + 1, k + 1) = c;
+    S.at(k + 1, k) = s;
+    S.at(k, k + 1) = -s;
+
     return S;
 }
 
