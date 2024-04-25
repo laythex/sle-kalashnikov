@@ -2,6 +2,7 @@
 
 #include "DenseMatrix.hpp"
 #include "CSRMatrix.hpp"
+#include "HessenbergMatrix.hpp"
 #include "tools.hpp"
 
 namespace solvers {
@@ -23,4 +24,5 @@ namespace solvers {
 
     std::vector<double> ConjugateGradient(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double>& x0, double breakpointResidual);
 
+    std::vector<double> GMRES(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double>& x0, double breakpointResidual);
 }

@@ -45,9 +45,7 @@ double operator*(const std::vector<double>& left, const std::vector<double>& rig
     return res;
 }
 
-bool operator==(const std::vector<double>& left, const std::vector<double>& right) {
-    double eps = 1e-11;
-
+bool equal(const std::vector<double>& left, const std::vector<double>& right, double eps) {
     for (unsigned i = 0; i < left.size(); i++) {
         if (fabs(left[i] - right[i]) > eps) {
             return false;
@@ -55,6 +53,10 @@ bool operator==(const std::vector<double>& left, const std::vector<double>& righ
     }
 
     return true;
+}
+
+bool operator==(const std::vector<double>& left, const std::vector<double>& right) {
+    return equal(left, right, 1e-11);
 }
 
 double norm2(const std::vector<double>& vec) {
@@ -155,22 +157,6 @@ double calcMaxEigenvalue(const CSRMatrix& A, double precision) {
     } while (fabs(eigenval - prev) > precision);
 
     return eigenval;
-}
-
-DenseMatrix GivensRotation(const std::vector<double>& v, size_t k) {
-    size_t n = v.size();
-    DenseMatrix S = identity(n);
-
-    double x = sqrt(v[k] * v[k] + v[k + 1] * v[k + 1]);
-    double c =  v[k] / x;
-    double s = -v[k + 1] / x;
-
-    S.at(k, k) = c;
-    S.at(k + 1, k + 1) = c;
-    S.at(k + 1, k) = s;
-    S.at(k, k + 1) = -s;
-
-    return S;
 }
 
 std::vector<double> JacobiTools::multiply(const CSRMatrix& csr, const std::vector<double>& v) {

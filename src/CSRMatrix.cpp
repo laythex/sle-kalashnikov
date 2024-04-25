@@ -66,19 +66,19 @@ std::ostream& operator<<(std::ostream& os, const CSRMatrix& csr) {
     for (unsigned i = 0; i < csr.getValsSize(); i++) {
         os << csr.valsAt(i) << ' ';
     }
-    os << "}" << std::endl;
+    os << "}" << '\n';
 
     os << "Cols = { "; 
     for (unsigned i = 0; i < csr.getColsSize(); i++) {
         os << csr.colsAt(i) << ' ';
     }
-    os << "}" << std::endl;
+    os << "}" << '\n';
 
     os << "Rows = { "; 
     for (unsigned i = 0; i < csr.getRowsSize(); i++) {
         os << csr.rowsAt(i) << ' ';
     }
-    os << "}" << std::endl;
+    os << "}" << '\n';
 
     return os;
 }

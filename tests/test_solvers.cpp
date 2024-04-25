@@ -116,3 +116,20 @@ TEST(solve, ConjugateGradient) {
 
     EXPECT_TRUE(x_calc == x_real);
 }
+
+TEST(solve, GMRES) {
+    double eps = 1e-2;
+    unsigned n = 3;//_random::getUnsigned(1, 1e2);
+    CSRMatrix A({-1, 1, 2, 3}, {0, 1, 1, 2}, {0, 2, 3, 4});
+    // CSRMatrix A = _random::getCSRMatrix(n, n, 0.1);
+	std::vector<double> x_real(n, 1);//_random::getVector(n);
+    std::vector<double> b = A * x_real;
+    std::vector<double> x0(n);
+
+    std::vector<double> x_calc = solvers::GMRES(A, b, x0, eps);
+    std::cout << x_calc << std::endl;
+    std::cout << x_real << std::endl;
+    std::cout << norm2(A * x_calc - b) << std::endl;
+
+    EXPECT_TRUE(equal(x_calc, x_real, eps));
+}

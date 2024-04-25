@@ -86,8 +86,10 @@ DenseMatrix DenseMatrix::transpose() const {
 
 DenseMatrix DenseMatrix::resize(size_t nrows, size_t ncols) const {
     std::vector<double> v(nrows * ncols);
-    for (size_t i = 0; i < rows; i++) {
-        for (size_t j = 0; j < cols; j++) {
+
+    size_t r = std::min(rows, nrows), c = std::min(cols, ncols);
+    for (size_t i = 0; i < r; i++) {
+        for (size_t j = 0; j < c; j++) {
             v[i * ncols + j] = operator()(i, j);
         }
     }
@@ -133,7 +135,7 @@ std::ostream& operator<<(std::ostream& os, const DenseMatrix& dm) {
             el = fabs(dm(i, j)) > eps ? dm(i, j) : 0;
             os << el << " ";
         }
-        os << std::endl;
+        os << '\n';
     }
     return os;
 }    

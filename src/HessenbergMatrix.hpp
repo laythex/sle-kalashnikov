@@ -8,15 +8,19 @@
 
 class HessenbergMatrix {
     public:
-    HessenbergMatrix(const CSRMatrix& A, const std::vector<double>& r0);
+    HessenbergMatrix(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double>& x0);
     void iterate();
+    double getResidual() const;
+    std::vector<double> solve() const;
 
-    DenseMatrix H;
-    
+    DenseMatrix getQ() const;
+    DenseMatrix getR() const;
+
     private:
     size_t n, j;
     CSRMatrix A;
-    std::vector<double> r0;
+    DenseMatrix H, Q;
+    std::vector<double> x0, b;
+    double r0_norm;
     std::vector<std::vector<double>> V;
-    std::vector<DenseMatrix> rots;
 };

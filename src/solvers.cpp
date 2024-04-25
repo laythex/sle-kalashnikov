@@ -167,3 +167,14 @@ std::vector<double> solvers::ConjugateGradient(const CSRMatrix& A, const std::ve
 
     return x;
 }
+
+std::vector<double> solvers::GMRES(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double>& x0, double breakpointResidual) {
+    HessenbergMatrix hm(A, b, x0);
+
+    while (breakpointResidual < hm.getResidual()) {
+        hm.iterate();
+    }
+
+    return hm.solve();
+}
+

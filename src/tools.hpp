@@ -14,6 +14,7 @@ std::vector<double> operator/(const std::vector<double>& left, double right);
 std::vector<double> operator+(const std::vector<double>& left, const std::vector<double>& right);
 std::vector<double> operator-(const std::vector<double>& left, const std::vector<double>& right);
 double operator*(const std::vector<double>& left, const std::vector<double>& right);
+bool equal(const std::vector<double>& left, const std::vector<double>& right, double eps);
 bool operator==(const std::vector<double>& left, const std::vector<double>& right);
 double norm2(const std::vector<double>& vec);
 std::vector<double> normalize(const std::vector<double>& vec);
@@ -29,7 +30,6 @@ namespace _random {
 }
 
 double calcMaxEigenvalue(const CSRMatrix& A, double precision);
-DenseMatrix GivensRotation(const std::vector<double>& v, size_t k);
 
 namespace JacobiTools {
     std::vector<double> multiply(const CSRMatrix& csr, const std::vector<double>& v);
