@@ -25,4 +25,6 @@ namespace solvers {
     std::vector<double> ConjugateGradient(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double>& x0, double breakpointResidual);
 
     std::vector<double> GMRES(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double>& x0, double breakpointResidual);
+
+    std::vector<double> GMRESm(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double>& x0, size_t m, double breakpointResidual);
 }

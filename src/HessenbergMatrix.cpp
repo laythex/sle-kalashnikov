@@ -2,11 +2,9 @@
 
 HessenbergMatrix::HessenbergMatrix(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double>& x0) : n(A.getRowsSize()), j(0), A(A), b(b), x0(x0) {
     std::vector<double> r0 = A * x0 - b;
-
     r0_norm = norm2(r0);
-    V.push_back(r0 / r0_norm);
-
-    Q = identity(1);
+    V.push_back(r0 / r0_norm); // Находим первый базисный вектор
+    q.push_back(1); // Начинаем строить первый столбец Q^T
 }
 
 void HessenbergMatrix::iterate() {
@@ -23,42 +21,42 @@ void HessenbergMatrix::iterate() {
     h = norm2(t);
     V.push_back(t / h);
 
-    // Считаем поворот T (косинус и синус)
-    double eps = 1e-13;
-    double tmp = sqrt(H(j, j) * H(j, j) + h * h);
-    double c = tmp > eps ? H(j, j) / tmp : 1;       // Eсли столбец получился нулевым,
-    double s = tmp > eps ? -h / tmp : 0;            // то не вращаем?
-
-    std::cout << H(j, j) << ' ' << h << ' ' << tmp << std::endl;
-    H.at(j, j) = tmp; // Матрицу H сразу превращаем в R
-
-    // Считаем Q_{j} = T * Q_{j - 1}
-    Q = Q.resize(j + 2, j + 2);
-    Q.at(j + 1, j + 1) = 1;
-
-    std::vector<double> q1 = Q.getRow(j); // Постарался максимально упростить матричное умножение
-    for (size_t i = 0; i < j + 2; i++) {
-        Q.at(j, i) = c * q1[i] - s * (i == j + 1);
-        Q.at(j + 1, i) = s * q1[i] + c * (i == j + 1);
+    // Применяем все предыдущие повороты к новому столбцу матрицы H
+    double h1, h2;
+    for (size_t i = 0; i < j; i++) {
+        h1 = rots[i].c * H(i, j) - rots[i].s * H(i + 1, j);
+        h2 = rots[i].s * H(i, j) + rots[i].c * H(i + 1, j);
+        H.at(i, j) = h1;
+        H.at(i + 1, j) = h2;
     }
-    std::cout << "Q: " << std::endl;
-    std::cout << getQ() << std::endl;
-    std::cout << "R: " << std::endl;
-    std::cout << getR() << std::endl;
-    std::cout << "QR: " << std::endl;
-    std::cout << getQ() * getR() << std::endl;
+
+    // Вычисляем новый поворот
+    double tmp = sqrt(H(j, j) * H(j, j) + h * h);
+    double c = H(j, j) / tmp;
+    double s = -h / tmp;
+    rots.push_back({c, s}); // Запоминаем поворот
+
+    // Превращаем матрицу H в матрицу R
+    H.at(j, j) = tmp;
+
+    // Вычисляем первый столбец Q^T
+    q.push_back(0);
+    h1 = c * q[j] - s * q[j + 1];
+    h2 = s * q[j] + c * q[j + 1];
+    q[j] = h1;
+    q[j + 1] = h2;
 
     j++;
 }
 
 double HessenbergMatrix::getResidual() const {
-    return fabs(Q(j, 0)) * r0_norm;
+    return fabs(q[j]) * r0_norm;
 }
 
 std::vector<double> HessenbergMatrix::solve() const {
     std::vector<double> dx(x0.size());
     std::vector<double> y(j);
-    std::vector<double> z = Q.getCol(0) * r0_norm;
+    std::vector<double> z = q * r0_norm;
 
     double tmp;
     for (int i = j - 1; i >= 0; i--) {
@@ -72,12 +70,4 @@ std::vector<double> HessenbergMatrix::solve() const {
     }
 
     return x0 - dx;
-}
-
-DenseMatrix HessenbergMatrix::getQ() const {
-    return Q.transpose();
-}
-
-DenseMatrix HessenbergMatrix::getR() const {
-    return H;
 }

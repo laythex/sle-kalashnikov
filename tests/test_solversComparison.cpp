@@ -39,7 +39,7 @@ int main() {
     std::ofstream fileAGS("../tests/solversComparison/AGS.txt", std::ios::out);
     std::ofstream fileGradDes("../tests/solversComparison/GradDes.txt", std::ios::out);
     std::ofstream fileConjGrad("../tests/solversComparison/ConjGrad.txt", std::ios::out);
-
+    std::ofstream fileGMRES("../tests/solversComparison/GMRES.txt", std::ios::out);
 
     for (unsigned n = 0; n <= max_rows; n += rows_step) {
         A = _random::getTestMatrix(n);
@@ -49,53 +49,65 @@ int main() {
 
         double lambda = calcMaxEigenvalue(A, 1e-3);
 
-        auto startFPI = std::chrono::high_resolution_clock::now(); 
+        auto start = std::chrono::high_resolution_clock::now(); 
         x_calc = solvers::fixedPointIteration(A, b, 1 / lambda, x0, 1e-12);
-        auto endFPI = std::chrono::high_resolution_clock::now();
-        auto nsecFPI = endFPI - startFPI;
-        fileFPI << n << '\t' << nsecFPI.count() << std::endl;
+        auto end = std::chrono::high_resolution_clock::now();
+        auto nsec = end - start;
+        fileFPI << n << '\t' << nsec.count() << std::endl;
 
-        auto startFPIA = std::chrono::high_resolution_clock::now(); 
+        start = std::chrono::high_resolution_clock::now(); 
         x_calc = solvers::FPIAccelerated(A, b, 0, lambda, x0, 1e-12);
-        auto endFPIA = std::chrono::high_resolution_clock::now();
-        auto nsecFPIA = endFPIA - startFPIA;
-        fileFPIA << n << '\t' << nsecFPIA.count() << std::endl;
+        end = std::chrono::high_resolution_clock::now();
+        nsec = end - start;
+        fileFPIA << n << '\t' << nsec.count() << std::endl;
     
-        auto startJacobi = std::chrono::high_resolution_clock::now(); 
+        start = std::chrono::high_resolution_clock::now(); 
         x_calc = solvers::Jacobi(A, b, x0, 1e-12);
-        auto endJacobi = std::chrono::high_resolution_clock::now();
-        auto nsecJacobi = endJacobi - startJacobi;
-        fileJacobi << n << '\t' << nsecJacobi.count() << std::endl;
+        end = std::chrono::high_resolution_clock::now();
+        nsec = end - start;
+        fileJacobi << n << '\t' << nsec.count() << std::endl;
 
-        auto startGS = std::chrono::high_resolution_clock::now(); 
+        start = std::chrono::high_resolution_clock::now(); 
         x_calc = solvers::GaussSeidel(A, b, x0, 1e-12);
-        auto endGS = std::chrono::high_resolution_clock::now();
-        auto nsecGS = endGS - startGS;
-        fileGS << n << '\t' << nsecGS.count() << std::endl;
+        end = std::chrono::high_resolution_clock::now();
+        nsec = end - start;
+        fileGS << n << '\t' << nsec.count() << std::endl;
 
-        auto startSGS = std::chrono::high_resolution_clock::now(); 
+        start = std::chrono::high_resolution_clock::now(); 
         x_calc = solvers::SymGaussSeidel(A, b, x0, 1e-12);
-        auto endSGS = std::chrono::high_resolution_clock::now();
-        auto nsecSGS = endSGS - startSGS;
-        fileSGS << n << '\t' << nsecSGS.count() << std::endl;
+        end = std::chrono::high_resolution_clock::now();
+        nsec = end - start;
+        fileSGS << n << '\t' << nsec.count() << std::endl;
 
-        auto startAGS = std::chrono::high_resolution_clock::now(); 
+        start = std::chrono::high_resolution_clock::now(); 
         x_calc = solvers::AccGaussSeidel(A, b, 0.9, x0, 1e-12);
-        auto endAGS = std::chrono::high_resolution_clock::now();
-        auto nsecAGS = endAGS - startAGS;
-        fileAGS << n << '\t' << nsecAGS.count() << std::endl;
+        end = std::chrono::high_resolution_clock::now();
+        nsec = end - start;
+        fileAGS << n << '\t' << nsec.count() << std::endl;
 
-        auto startGradDes = std::chrono::high_resolution_clock::now(); 
+        start = std::chrono::high_resolution_clock::now(); 
         x_calc = solvers::GradientDescent(A, b, x0, 1e-12);
-        auto endGradDes = std::chrono::high_resolution_clock::now();
-        auto nsecGradDes = endGradDes - startGradDes;
-        fileGradDes << n << '\t' << nsecGradDes.count() << std::endl;
+        end = std::chrono::high_resolution_clock::now();
+        nsec = end - start;
+        fileGradDes << n << '\t' << nsec.count() << std::endl;
 
-        auto startConjGrad = std::chrono::high_resolution_clock::now(); 
+        start = std::chrono::high_resolution_clock::now(); 
         x_calc = solvers::GradientDescent(A, b, x0, 1e-12);
-        auto endConjGrad = std::chrono::high_resolution_clock::now();
-        auto nsecConjGrad = endConjGrad - startConjGrad;
-        fileConjGrad << n << '\t' << nsecConjGrad.count() << std::endl;
+        end = std::chrono::high_resolution_clock::now();
+        nsec = end - start;
+        fileConjGrad << n << '\t' << nsec.count() << std::endl;
+
+        start = std::chrono::high_resolution_clock::now(); 
+        x_calc = solvers::GradientDescent(A, b, x0, 1e-12);
+        end = std::chrono::high_resolution_clock::now();
+        nsec = end - start;
+        fileConjGrad << n << '\t' << nsec.count() << std::endl;
+
+        start = std::chrono::high_resolution_clock::now(); 
+        x_calc = solvers::GMRES(A, b, x0, 1e-12);
+        end = std::chrono::high_resolution_clock::now();
+        nsec = end - start;
+        fileGMRES << n << '\t' << nsec.count() << std::endl;
 
         std::cout << n << std::endl;
     }
@@ -108,6 +120,7 @@ int main() {
     fileAGS.close();
     fileGradDes.close();
     fileConjGrad.close();
+    fileGMRES.close();
 
     return 0;
 }

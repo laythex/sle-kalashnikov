@@ -68,7 +68,7 @@ std::vector<double> normalize(const std::vector<double>& vec) {
 }
 
 std::ostream& operator<<(std::ostream& os, const std::vector<double>& vec) {
-    double eps = 1e-12, el;
+    double eps = 1e-100, el;
 
     for (unsigned i = 0; i < vec.size(); i++) {
         el = fabs(vec[i]) > eps ? vec[i] : 0;

@@ -178,3 +178,22 @@ std::vector<double> solvers::GMRES(const CSRMatrix& A, const std::vector<double>
     return hm.solve();
 }
 
+std::vector<double> solvers::GMRESm(const CSRMatrix& A, const std::vector<double>& b, const std::vector<double>& x0, size_t m, double breakpointResidual) {
+    HessenbergMatrix hm(A, b, x0);
+
+    size_t k = 0;
+    while (breakpointResidual < hm.getResidual()) {
+        hm.iterate();
+        k++;
+
+        if (k == m) { 
+            hm = HessenbergMatrix(A, b, hm.solve());
+            hm.iterate();
+            k = 0;
+        }
+    }
+
+    return hm.solve();
+}
+
+
